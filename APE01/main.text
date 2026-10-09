@@ -1,0 +1,175 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\code}[1]{\texttt{\textcolor{green!40!black}{#1}}}
+\theoremstyle{plain}
+\newtheorem{proposicion}{Proposición}
+
+\begin{document}
+
+\noindent\textbf{Estudiante:} Jose Daniel Maldonado Rodriguez
+
+\vspace{0.6em}
+\noindent\textbf{\textcolor{blue!50!black}{Tarea 4}}
+
+\vspace{0.6em}
+\noindent\textbf{Basado en los resultados, el estudiante debe aplicar ABI para investigar el porqué de la diferencia matemática.}
+
+%==========================================================
+\section*{1. Empaquetado de propiedades en las Hidden Classes de V8}
+
+Un objeto de JavaScript dentro de la memoria se puede dividir en dos estructuras de datos diferentes: una para propiedades y otra para elementos. El espacio de propiedades corresponde a las propiedades con nombre y los elementos son las propiedades indexadas por array.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{image1.png}
+  \caption{Objeto JavaScript con sus dos almacenes: propiedades con nombre (\code{properties}) y propiedades indexadas (\code{elements}). Fuente: V8 blog, ``Fast properties in V8''.}
+\end{figure}
+
+El motor V8 utiliza tres estructuras de datos importantes para construir una hidden class.
+
+\paragraph{Map (Hidden class).} Describe la forma del objeto y responde ``¿dónde está esta propiedad?''. Cuando se añade una propiedad, el objeto transiciona a otro Map; si esa transición ya existe, se reutiliza. Por lo tanto, los Maps se crean sobre la marcha y se actualizan cada vez que los objetos cambian. Esta estructura almacena metadatos de un objeto, incluyendo el número de propiedades y la referencia a su objeto prototipo. Todos los objetos creados con el mismo constructor y con las propiedades en el mismo orden comparten el mismo Map.
+
+\paragraph{DescriptorArray.} Es una tabla que guarda, para cada propiedad con nombre, su nombre, sus atributos y su ubicación (dentro del propio objeto o en el almacén \code{properties}). Según la documentación de V8, toda la metainformación de las propiedades rápidas reside en esta estructura y no se repite en cada objeto. Se puede compartir entre varios Maps de una misma cadena de transiciones, ya que cada Map sabe cuántas propiedades puede mirar dentro del DescriptorArray.
+
+\paragraph{TransitionArray.} Es una tabla que relaciona el nombre de una propiedad añadida con el Map hijo al que pasa el objeto. Solo aparece cuando hay una bifurcación, es decir, cuando un Map tiene más de una transición posible; si tiene una sola, V8 no siempre crea un TransitionArray completo.
+
+\paragraph{El empaquetado físico de las propiedades.} Un objeto guarda sus datos en tres lugares: las propiedades \textbf{in-object}, el almacén \code{properties} y el almacén \code{elements}. El Map no contiene los valores, solo indica \emph{dónde} están. Las propiedades in-object se guardan dentro del propio objeto y son las más rápidas, porque se acceden sin indirección. Las propiedades con nombre que no caben allí van al almacén \code{properties}, donde se acceden por índice, y las de índice numérico van al almacén \code{elements}. Si el objeto se usa como diccionario (altas y bajas frecuentes de propiedades), V8 pasa al modo lento: las propiedades se guardan en una tabla hash y dejan de depender del Map.
+
+\paragraph{Cabecera del objeto y búsqueda de una propiedad.} Todo objeto comienza con una cabecera de tres punteros, \code{map}, \code{properties} y \code{elements}, seguida de las propiedades in-object. Para leer una propiedad, por ejemplo \code{p.lat}, V8 lee el puntero \code{map} del objeto, consulta en el DescriptorArray de ese Map dónde está \code{lat} y lee el valor en esa ubicación. Con inline caches, V8 recuerda el par (Map, ubicación) y se salta la consulta mientras el Map no cambie.
+
+\paragraph{Aplicación al laboratorio.} En \code{CoordenadaObj}, \code{lat} y \code{lng} se asignan en el constructor, por lo que V8 construye la cadena de Maps
+\[
+  M_0\ (\text{vacío}) \;\longrightarrow\; M_1\{\texttt{lat}\} \;\longrightarrow\; M_2\{\texttt{lat},\texttt{lng}\}.
+\]
+Los $10^6$ objetos comparten un único Map final y un único DescriptorArray de dos entradas, de modo que el costo de la hidden class es constante, $O(1)$, y no crece con $N$. En cambio, cada objeto paga su propia cabecera y sus dos campos in-object, y como \code{lat} y \code{lng} son números decimales (no enteros pequeños), cada campo apunta además a un objeto HeapNumber en el heap. Disposición de un objeto:
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Campo} & \textbf{Contenido} \\
+\midrule
+\code{map}        & puntero al Map compartido \\
+\code{properties} & puntero a un arreglo vacío compartido \\
+\code{elements}   & puntero a un arreglo vacío compartido \\
+\code{lat}        & puntero a un HeapNumber (in-object) \\
+\code{lng}        & puntero a un HeapNumber (in-object) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Conclusión.} La Hidden Class permite que los objetos compartan la descripción de su forma, pero no elimina el costo por objeto: cabecera, punteros y HeapNumbers. Por eso, aunque ambos enfoques crecen linealmente con $N$, el de objetos tiene una constante por registro mucho mayor que el de \code{Float64Array}, que guarda los valores de forma contigua y sin metadatos por elemento.
+
+%==========================================================
+\section*{2. Cálculo teórico del espacio asintótico}
+
+\noindent\textbf{Calcule teóricamente en LaTeX el espacio asintótico. Sabiendo que un Float64 pesa 8 bytes, demuestre por qué.}
+
+\subsection*{2.1 Modelo y supuestos}
+
+Sea $N = 10^6$ el número de coordenadas y $w = 8$ bytes el tamaño de un puntero y de un \code{Float64}. Se supone que Node.js no usa pointer compression (si lo usara, los punteros ocuparían 4 bytes y las constantes cambiarían). Las constantes $c_1, c_2$ agrupan los costos que no dependen de $N$ (encabezado de los \code{ArrayBuffer}, Map, DescriptorArray, etc.), por lo que $c_1, c_2 = O(1)$.
+
+\subsection*{2.2 Enfoque de primitivos (\texttt{lab01\_primitivos.js})}
+
+Se usan dos \code{Float64Array} de $N$ elementos. Cada uno almacena sus valores de forma contigua, sin metadatos por elemento:
+\begin{align}
+  S_{\mathrm{prim}}(N) &= 2 \cdot N \cdot 8 + c_1 = 16N + c_1,\\
+  S_{\mathrm{prim}}(10^6) &\approx 16\times 10^{6}\ \text{B} = \frac{16\times 10^{6}}{1024^{2}}\ \text{MiB} \approx 15{,}26\ \text{MiB}.
+\end{align}
+
+\subsection*{2.3 Enfoque de objetos (\texttt{lab01\_objetos.js})}
+
+Costo por cada registro \code{CoordenadaObj}:
+\begin{align}
+  \text{cabecera (\code{map}, \code{properties}, \code{elements})} &= 3w = 24\ \text{B},\\
+  \text{campos \code{lat} y \code{lng} (punteros in-object)} &= 2w = 16\ \text{B},\\
+  \text{dos \texttt{HeapNumber} (puntero a Map + valor \texttt{double})} &= 2(w + 8) = 32\ \text{B},\\
+  \text{ranura en el arreglo \texttt{coordenadas}} &= w = 8\ \text{B}.
+\end{align}
+Sumando,
+\begin{equation}
+  s_{\mathrm{obj}} = 24 + 16 + 32 + 8 = 80\ \text{B por registro.}
+\end{equation}
+La Hidden Class (Map y DescriptorArray) es compartida por los $N$ objetos y aporta solo una constante:
+\begin{align}
+  S_{\mathrm{obj}}(N) &= 80N + c_2,\\
+  S_{\mathrm{obj}}(10^6) &\approx 80\times 10^{6}\ \text{B} \approx 76{,}29\ \text{MiB}.
+\end{align}
+
+\subsection*{2.4 Comparación asintótica}
+
+\begin{proposicion}
+Ambos enfoques son lineales en $N$, pero difieren en la constante multiplicativa:
+\[
+  S_{\mathrm{prim}}(N) = \Theta(N), \qquad S_{\mathrm{obj}}(N) = \Theta(N), \qquad
+  \lim_{N\to\infty}\frac{S_{\mathrm{obj}}(N)}{S_{\mathrm{prim}}(N)} = 5 .
+\]
+\end{proposicion}
+
+\begin{proof}
+Como $16N \le S_{\mathrm{prim}}(N) \le 16N + c_1$ y $80N \le S_{\mathrm{obj}}(N) \le 80N + c_2$, ambas funciones son $\Theta(N)$. Además,
+\[
+  \lim_{N\to\infty}\frac{80N + c_2}{16N + c_1}
+  = \lim_{N\to\infty}\frac{80 + c_2/N}{16 + c_1/N}
+  = \frac{80}{16} = 5,
+\]
+pues $c_1/N \to 0$ y $c_2/N \to 0$ cuando $N \to \infty$.
+\end{proof}
+
+La diferencia absoluta crece linealmente con $N$:
+\[
+  S_{\mathrm{obj}}(N) - S_{\mathrm{prim}}(N) = 64N + (c_2 - c_1) = \Theta(N),
+\]
+y la eficiencia de almacenamiento (bytes útiles sobre bytes usados) es
+\[
+  \eta_{\mathrm{prim}} = \frac{16}{16} = 100\,\%, \qquad
+  \eta_{\mathrm{obj}} = \frac{16}{80} = 20\,\%.
+\]
+El $80\,\%$ restante del enfoque de objetos es sobrecarga: cabeceras, punteros y objetos HeapNumber. Esto explica por qué los objetos consumen más memoria aunque almacenen los mismos $16$ bytes de datos por coordenada.
+
+\subsection*{2.5 Contraste con la medición}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Enfoque} & \textbf{Teórico (MiB)} & \textbf{Medido (MiB)} & \textbf{Métrica usada} \\
+\midrule
+Objetos     & $76{,}29$ & $89{,}16$ & \code{heapUsed} \\
+Primitivos  & $15{,}26$ & $0{,}60$  & \code{heapUsed} \\
+Primitivos  & $15{,}26$ & $\approx 15{,}26$ & \code{arrayBuffers} \\
+\bottomrule
+\end{tabular}
+\caption{Espacio teórico frente al medido con \code{process.memoryUsage()} para $N = 10^6$.}
+\end{table}
+
+\begin{itemize}
+  \item \textbf{Primitivos.} El valor teórico coincide con \code{arrayBuffers}: $16\times10^{6}/1024^{2} = 15{,}2588$ MiB. El resultado de solo $0{,}60$ MiB se debe a que el almacén de un \code{Float64Array} es memoria fuera del heap de V8, que \code{heapUsed} no contabiliza; solo mide los pequeños objetos envoltorio.
+  \item \textbf{Objetos.} El modelo predice $80$ B por registro y lo medido equivale a $89{,}16 \cdot 1024^2 / 10^6 \approx 93{,}5$ B. Los $\approx 13$ B restantes por registro se atribuyen, como hipótesis, al crecimiento del arreglo \code{coordenadas} (capacidad sobrante y copias antiguas aún no recolectadas por el recolector de basura).
+  \item \textbf{Razón medida.} Con la métrica corregida, $89{,}16 / 15{,}26 \approx 5{,}8$, cercana al valor teórico $5$.
+\end{itemize}
+
+\subsection*{2.6 Conclusión}
+
+Ambos enfoques tienen complejidad espacial $\Theta(N)$, pero el de objetos paga unos $80$ bytes por registro (cabecera, punteros y HeapNumbers) para guardar $16$ bytes de datos, mientras que los \code{Float64Array} guardan únicamente esos $16$ bytes, de forma contigua y fuera del heap. La diferencia matemática observada en el consumo neto es, por tanto, una diferencia de la \emph{constante multiplicativa}, no del orden de crecimiento.
+
+%==========================================================
+\section*{Referencias}
+
+\begin{itemize}
+  \item V8 blog, Fast properties in V8: \url{https://v8.dev/blog/fast-properties}
+  \item V8 docs, Maps (Hidden classes) in V8: \url{https://v8.dev/docs/hidden-classes}
+  \item V8pedia, HeapObject \& Map: \url{https://v8pedia.void.app/objects/map}
+  \item Habr, Smi y HeapNumber en V8: \url{https://habr.com/en/articles/774548}
+  \item Node.js, \code{process.memoryUsage()}:\newline \url{https://nodejs.org/api/process.html#processmemoryusage}
+\end{itemize}
+
+\end{document}

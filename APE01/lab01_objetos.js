@@ -20,5 +20,4 @@ for (let i = 0; i < N; i++) {
 const memoriaFinal = getMemoryUsage();
 console.log(`[Enfoque Objetos] Memoria inicial: ${memoriaInicial} MB`);
 console.log(`[Enfoque Objetos] Memoria final: ${memoriaFinal} MB`);
-console.log(`[Enfoque Objetos] Consumo Neto: ${memoriaFinal - memoriaInicial}
-MB`);
+console.log(`[Enfoque Objetos] Consumo Neto: ${memoriaFinal - memoriaInicial}MB`);
