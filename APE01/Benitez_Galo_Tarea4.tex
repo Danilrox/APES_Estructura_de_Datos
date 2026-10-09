@@ -1,0 +1,116 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{microtype}
+
+\geometry{left=2.5cm,right=2.5cm,top=3cm,bottom=2.5cm}
+
+\definecolor{unlblue}{RGB}{23,78,107}
+
+% Encabezado
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textbf{Universidad Nacional de Loja}}
+\fancyhead[R]{FEIRNNR -- Carrera de Computación}
+\renewcommand{\headrulewidth}{0.8pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\color{unlblue} Tarea 4: Investigación y Cálculo de Complejidad}
+\end{center}
+
+\vspace{0.5em}
+
+\textbf{Nombre:} Benítez Galo \hfill \textbf{Fecha:} 08/10/2026\\
+\textbf{Ciclo:} 3 <<A>>
+
+\vspace{0.5em}
+
+\textbf{Basado en los resultados, el estudiante debe aplicar ABI para investigar el porqué de la diferencia matemática.}
+
+%------------------------------------------------------------
+\section*{1. Hidden Classes en la documentación oficial de V8}
+
+\textbf{Busque en la documentación oficial de V8 cómo se empaquetan las propiedades en los \textit{Hidden Classes} de JavaScript.}
+
+Según la documentación oficial de V8, las propiedades de los objetos JavaScript se organizan mediante una estructura llamada \textit{Hidden Class}, también conocida como \textit{Map}. Esta estructura permite a V8 reconocer la forma de un objeto y acceder a sus propiedades de manera más eficiente.
+
+\subsection*{¿Cómo se organizan las propiedades?}
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Hidden Class (Map):} almacena información sobre la estructura del objeto, como la cantidad de propiedades y su organización.
+  \item \textbf{Descriptor Array:} contiene información de las propiedades, como sus nombres, atributos y ubicaciones.
+  \item \textbf{Transition Array:} permite registrar las transiciones entre Hidden Classes cuando se agregan nuevas propiedades.
+  \item Cuando varios objetos tienen las mismas propiedades en el mismo orden, V8 puede reutilizar la misma estructura interna. Si se agrega una propiedad nueva, normalmente se genera una transición hacia otra Hidden Class.
+\end{enumerate}
+
+%------------------------------------------------------------
+\section*{2. Espacio asintótico}
+
+\textbf{Calcule teóricamente en \LaTeX{} el espacio asintótico. Sabiendo que un Float64 pesa 8 bytes, demuestre por qué.}
+
+Se desea almacenar $N = 10^{6}$ coordenadas. Cada coordenada tiene una latitud y una longitud, y cada valor Float64 ocupa 8 bytes.
+
+\subsection*{Arreglo de objetos}
+
+Si se cuentan únicamente los dos valores numéricos de cada coordenada:
+\begin{align*}
+  S(N)      &= N(8 + 8) \\
+  S(N)      &= 16N \text{ bytes} \\
+  S(10^{6}) &= 16 \times 10^{6} \\
+  \mathbf{S(10^{6})} &= \mathbf{16\,000\,000 \text{ bytes}}
+\end{align*}
+
+Este resultado solo representa el espacio equivalente a los valores numéricos. El consumo real es mayor porque también hay que considerar la estructura interna de cada objeto y las referencias del arreglo que los almacena.
+
+\textbf{Complejidad espacial:} $S(N) = O(N)$.
+
+\subsection*{Arreglos de primitivos (\texttt{Float64Array})}
+
+Se crean dos arreglos tipados, cada uno con $N$ elementos de 8 bytes:
+\begin{align*}
+  S(N)      &= 8N + 8N \\
+  S(N)      &= 16N \text{ bytes} \\
+  S(10^{6}) &= 16 \times 10^{6} \\
+  \mathbf{S(10^{6})} &= \mathbf{16\,000\,000 \text{ bytes}}
+\end{align*}
+\[
+  \frac{16\,000\,000}{1024^{2}} \approx 15{,}26 \text{ MiB}
+\]
+
+El cálculo corresponde al espacio de los datos numéricos almacenados en los dos arreglos. La complejidad espacial también es lineal: $S(N) = O(N)$.
+
+\subsection*{Comparación de los dos enfoques}
+
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{|p{4.6cm}|p{4.2cm}|p{4.2cm}|}
+  \hline
+  \textbf{Característica} & \textbf{Arreglo de objetos} & \textbf{Float64Array} \\
+  \hline
+  Datos almacenados & Latitud y longitud & Latitud y longitud \\
+  \hline
+  Espacio teórico de los valores & $16N$ bytes & $16N$ bytes \\
+  \hline
+  Objetos individuales & Sí & No \\
+  \hline
+  Forma de almacenamiento & Propiedades de objetos & Memoria tipada contigua \\
+  \hline
+  Complejidad espacial & $O(N)$ & $O(N)$ \\
+  \hline
+\end{tabular}
+\end{center}
+
+\end{document}
