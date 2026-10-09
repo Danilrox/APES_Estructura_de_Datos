@@ -2,7 +2,7 @@
 
 **Autor:** Domenica Narvaez  
 **Afiliación:** Carrera de Computación  
-**Fecha:** \today  
+**Fecha:** 08/10/2026
 
 ---
 
