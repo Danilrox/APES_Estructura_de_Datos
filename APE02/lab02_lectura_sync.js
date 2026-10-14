@@ -13,7 +13,6 @@ const lineas = data.split('\n');
 const end = performance.now();
 const memoryAfter = process.memoryUsage().heapUsed;
 console.log(`[Lectura Síncrona] Total registros leídos: ${lineas.length - 1}`);
-console.log(`[Lectura Síncrona] Tiempo de I/O + Parsing: ${((end - start) /
-1000).toFixed(2)} segundos.`);
+console.log(`[Lectura Síncrona] Tiempo de I/O + Parsing: ${((end - start) / 1000).toFixed(2)} segundos.`);
 console.log(`[Lectura Síncrona] Consumo Neto de RAM: ${((memoryAfter -
 memoryBefore) / 1024 / 1024).toFixed(2)} MB`);

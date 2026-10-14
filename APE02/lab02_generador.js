@@ -22,8 +22,7 @@ writableStream.end();
 
 writableStream.on('finish', () => {
     const end = performance.now();
-    console.log(`[Generador] Archivo creado en ${((end - start) / 1000).toFixed(2)}
-    segundos.`);
+    console.log(`[Generador] Archivo creado en ${((end - start) / 1000).toFixed(2)} segundos.`);
 
     // Calcular tamaño del archivo en disco
     const stats = fs.statSync(FILE_NAME);

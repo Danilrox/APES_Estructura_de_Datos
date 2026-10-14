@@ -20,7 +20,5 @@ readableStream.on('end', () => {
 const end = performance.now();
 const memoryAfter = process.memoryUsage().heapUsed;
 console.log(`[Lectura por Stream] Total registros procesados: ${totalRegistros}`);
-
-console.log(`[Lectura por Stream] Tiempo de I/O parcializado: ${((end - start) /
-1000).toFixed(2)} segundos.`);
+console.log(`[Lectura por Stream] Tiempo de I/O parcializado: ${((end - start) / 1000).toFixed(2)} segundos.`);
 console.log(`[Lectura por Stream] Consumo Neto de RAM: ${((memoryAfter - memoryBefore) / 1024 / 1024).toFixed(2)} MB`);});
