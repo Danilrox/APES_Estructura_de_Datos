@@ -1,4 +1,3 @@
-Autor: Dario CHillogallo
 # **Tarea 4: Análisis Matemático de Rendimiento**
 
 1. **Demuestre 	teóricamente (utilizando notación de orden asintótico) por qué 	la función bloqueante impone  S(n) = O(n)  	frente al enfoque Stream S(n) = 0(1)**
