@@ -1,0 +1,13 @@
+{
+  "name": "aa_avance4_abp_grupo03",
+  "version": "1.0.0",
+  "description": "Navegación bidireccional con Lista Doblemente Enlazada - Estructura de Datos, UNL",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/navegacion.test.js"
+  }
+}
