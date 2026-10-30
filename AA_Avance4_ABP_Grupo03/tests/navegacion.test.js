@@ -5,11 +5,17 @@ const ListaDobleNavegacion = require('../src/models/ListaDobleNavegacion');
 describe('Pruebas Unitarias - Navegación Bidireccional (Avance 4 ABP)', () => {
   let lista;
 
-  // --------------------------------------------------------------------------
-  // INTEGRANTE 5: pegar aquí el beforeEach (crea la lista con 101, 102 y 103)
-  // y la prueba 1 (Inicialización).
-  // --------------------------------------------------------------------------
-
+  beforeEach(() => {
+    lista = new ListaDobleNavegacion();
+    lista.insertar({ id: 101, accion: 'Cargar Vista A' });
+    lista.insertar({ id: 102, accion: 'Filtrar Datos B' });
+    lista.insertar({ id: 103, accion: 'Exportar Reporte C' });
+  });
+  
+  test('1. Avance Inicial: Debe iniciar correctamente en el primer nodo', () => {
+    assert.equal(lista.obtenerActual().id, 101);
+    assert.equal(lista.longitud, 3);
+  });
   test('2. Avance Secuencial: Debe desplazarse hacia adelante correctamente', () => {
     assert.equal(lista.avanzar().id, 102);
     assert.equal(lista.avanzar().id, 103);
