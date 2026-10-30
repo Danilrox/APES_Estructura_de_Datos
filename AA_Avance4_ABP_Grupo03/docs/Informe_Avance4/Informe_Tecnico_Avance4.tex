@@ -108,8 +108,58 @@ revisó y se hizo el merge.]
 \input{3_seccion_complejidad}
 
 % --- Integrante 4: eliminarActual() y gestión de memoria
-[PEGAR AQUÍ la sección del Integrante 4 (Big-O de eliminarActual y liberación
-de referencias para el Garbage Collector).]
+
+\subsection{Análisis de complejidad de eliminarActual()}
+
+El método \texttt{eliminarActual()} permite eliminar el nodo que se
+encuentra seleccionado mediante el cursor \texttt{actual} de la lista
+doblemente enlazada. Para realizar esta operación, utiliza las
+referencias \texttt{anterior} y \texttt{siguiente} del nodo seleccionado,
+permitiendo reconectar los nodos vecinos sin recorrer toda la estructura.
+
+La operación contempla tres situaciones principales:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Eliminación de un nodo intermedio:} se conecta el nodo
+    anterior con el siguiente.
+
+    \item \textbf{Eliminación de la cabeza o la cola:} se actualiza el
+    extremo correspondiente para conservar la estructura.
+
+    \item \textbf{Eliminación del único nodo:} las referencias
+    \texttt{cabeza}, \texttt{cola} y \texttt{actual} quedan en
+    \texttt{null}.
+\end{itemize}
+
+\textbf{Complejidad temporal:} La operación tiene una complejidad
+de $O(1)$, debido a que accede directamente al nodo actual y modifica
+una cantidad constante de referencias. No necesita recorrer la lista.
+
+\textbf{Complejidad espacial:} La complejidad auxiliar es $O(1)$,
+porque utiliza únicamente una referencia temporal al nodo eliminado,
+sin crear estructuras adicionales.
+
+\subsection{Gestión de memoria y Garbage Collector}
+
+Después de eliminar un nodo, el método establece sus referencias
+\texttt{siguiente} y \texttt{anterior} en \texttt{null}. Esta acción
+desvincula el nodo eliminado de la lista y evita que mantenga conexiones
+innecesarias con los demás elementos.
+
+En JavaScript, el Garbage Collector (recolector de basura) recupera
+automáticamente la memoria de los objetos que ya no son accesibles
+desde el programa. Por lo tanto, al eliminar las referencias internas
+del nodo, se facilita su posterior recolección, siempre que no existan
+otras referencias externas que lo mantengan accesible.
+
+Es importante señalar que establecer las referencias en
+\texttt{null} no libera inmediatamente la memoria; únicamente
+facilita que el recolector de basura identifique los objetos que
+ya no se necesitan.
+
+De esta manera, el método \texttt{eliminarActual()} mantiene la
+integridad de la lista doblemente enlazada y contribuye a una
+gestión adecuada de la memoria.+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
