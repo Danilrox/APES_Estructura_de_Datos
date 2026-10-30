@@ -1,0 +1,178 @@
+% !TEX root = Informe_Tecnico_Avance4.tex
+% =====================================================================
+% INFORME TÉCNICO — AVANCE 4 ABP (Grupo 03) — Estructura de Datos, UNL
+% Plantilla basada en el formato "01 Ensayo Álgebra y CD.tex".
+%
+% CÓMO SE USA (Integrante 5):
+%   1. Llenar los datos de la carátula (sección "Datos").
+%   2. Reemplazar cada texto marcado con [COMPLETAR ...] por el contenido real.
+%   3. Las secciones de los integrantes 2, 3 y 4 se pegan donde dice
+%      [PEGAR AQUÍ ...] (o se incluyen con \input{nombre_del_archivo}).
+%   4. Poner las capturas en la carpeta Figuras/ con los nombres indicados.
+%   5. Compilar con biber (por la bibliografía). Máximo 5 páginas.
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+% -- Formato: carga todos los estilos de la UNL (márgenes, letra, encabezado, APA)
+\input{formato}
+
+% -- Paquetes adicionales (los mismos de la plantilla original)
+\usepackage{amsmath,amssymb}   % Símbolos matemáticos, por ejemplo O(1) y O(n)
+\usepackage{enumitem}          % Permite ajustar márgenes de listas
+
+% -- Comandos extra
+% Define el lenguaje JavaScript para mostrar código con colores (listings no lo trae)
+\lstdefinelanguage{JavaScript}{
+    keywords={const, let, var, class, constructor, return, if, else, new, null, this, require, module, exports},
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]',
+    morestring=[b]"
+}
+
+% -- Datos (aparecen en la carátula al hacer \maketitle)
+\title{Informe Técnico: Avance 4 del Proyecto ABP\\[0.3em]
+       \large Navegación Bidireccional con Lista Doblemente Enlazada}
+% Un \author por integrante. [COMPLETAR los nombres completos]
+\author{Integrante 1}
+\author{Integrante 2}
+\author{Domenica Narváez}
+\author{Integrante 4}
+\author{Integrante 5}
+% Afiliación: Universidad, carrera, asignatura y grupo (lo pide la carátula oficial)
+\affil{Universidad Nacional de Loja\\ Carrera de Computación\\
+       Asignatura: Estructura de Datos — Grupo N.° 03}
+\date{\today}   % Fecha automática; también se puede escribir, por ejemplo: 6 de noviembre de 2026
+
+% --- Archivo de bibliografía
+\addbibresource{Referencias.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle               % Imprime título, integrantes, afiliación y fecha
+\thispagestyle{fancy}    % Pone el logo de la UNL en el encabezado de la primera página
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introducción}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Un párrafo corto (4 a 6 líneas).
+
+[COMPLETAR: Qué se hizo en este avance (paso de lista simple a lista doblemente
+enlazada con navegación bidireccional), para qué sirve dentro del proyecto ABP
+y cómo se trabajó en equipo con Git.]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Repositorio y evidencia Git}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 1.
+
+\textbf{Repositorio:} \url{https://github.com/Danilrox/APES_Estructura_de_Datos}\\
+\textbf{Rama de trabajo:} \texttt{feature/avance4-lista-doble-grupo03}\\
+\textbf{Commit Hash del merge a \texttt{main}:} \texttt{[COMPLETAR: hash del commit]}
+
+[COMPLETAR: Una o dos líneas explicando el flujo: cada integrante subió sus
+commits a la rama, se abrió el Pull Request hacia \texttt{main}, un compañero lo
+revisó y se hizo el merge.]
+
+% Captura del Pull Request aprobado. Guardarla como Figuras/pr_aprobado.png
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Figuras/pr_aprobado.png}
+    \caption{Pull Request aprobado e integrado a la rama \texttt{main}.}
+    \label{fig:pr}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Descripción de la estructura de datos}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 2. Explicar nodos, cabeza, cola y cursor (actual).
+
+[PEGAR AQUÍ la sección del Integrante 2.]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Análisis de complejidad}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Esta sección junta el análisis Big-O de los integrantes 3 y 4.
+
+% --- Integrante 3: avanzar() y retroceder()
+% Ya viene lista en el archivo 3_seccion_complejidad.tex (en esta misma carpeta).
+% \input lo inserta aquí tal cual, como si estuviera escrito en este archivo.
+\input{3_seccion_complejidad}
+
+% --- Integrante 4: eliminarActual() y gestión de memoria
+[PEGAR AQUÍ la sección del Integrante 4 (Big-O de eliminarActual y liberación
+de referencias para el Garbage Collector).]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Matriz de cobertura de pruebas}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Ejecutar "npm test" y llenar la tabla.
+
+En la Tabla \ref{tab:cobertura} se resumen las pruebas unitarias ejecutadas con
+\texttt{node --test} y en la Figura \ref{fig:consola} se muestra la salida de la
+consola.
+
+% Tabla con el formato de la plantilla (booktabs, letra pequeña, con leyenda)
+\begin{table}[H]
+    \centering\small
+    \begin{tabular}{@{}clcc@{}}
+    \toprule
+        \textbf{N.°} & \textbf{Prueba} & \textbf{Métodos evaluados} & \textbf{Estado} \\
+    \midrule
+        1 & Inicialización        & \texttt{insertar}, \texttt{obtenerActual} & [ok] \\
+        2 & Avance secuencial     & \texttt{avanzar}                          & [ok] \\
+        3 & Retroceso secuencial  & \texttt{avanzar}, \texttt{retroceder}     & [ok] \\
+        4 & Eliminación intermedia & \texttt{eliminarActual}, \texttt{retroceder} & [ok] \\
+        5 & Casos límite (lista vacía) & Todos los métodos                   & [ok] \\
+    \bottomrule
+    \end{tabular}
+    \caption{Matriz de cobertura de las pruebas unitarias.}
+    \label{tab:cobertura}
+\end{table}
+
+% Captura de la consola con las 5 pruebas en "ok". Guardarla como Figuras/consola_pruebas.png
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Figuras/consola_pruebas.png}
+    \caption{Resultado de \texttt{node --test tests/navegacion.test.js}: 5 de 5 pruebas aprobadas.}
+    \label{fig:consola}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusiones}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Dos o tres puntos cortos.
+
+\begin{itemize}[leftmargin=*]
+\item [COMPLETAR: conclusión sobre la estructura y su complejidad.]
+\item [COMPLETAR: conclusión sobre las pruebas o la gestión de memoria.]
+\item [COMPLETAR: conclusión sobre el trabajo colaborativo con Git.]
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Declaración de ética e inteligencia artificial}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Cada integrante debe pasarle qué IA usó y sus prompts.
+
+[COMPLETAR: Indicar si se usaron asistentes de IA, cuáles, para qué parte y los
+prompts principales. Declarar que la solución técnica fue revisada, probada y
+comprendida por los integrantes del grupo, quienes asumen su autoría.]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliografía: se genera sola desde Referencias.bib en formato APA 7
+\nocite{*}            % Incluye todas las referencias del .bib aunque no se citen
+\printbibliography
+
+\end{document}
