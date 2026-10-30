@@ -31,7 +31,58 @@ describe('Pruebas Unitarias - Navegación Bidireccional (Avance 4 ABP)', () => {
   });
 
   // --------------------------------------------------------------------------
-  // INTEGRANTE 4: pegar aquí las pruebas 4 (eliminación de nodo intermedio)
+  // INTEGRANTE 4: pruebas 4 (eliminación de nodo intermedio)
   // y 5 (casos límite con lista vacía).
+    test('4. Eliminación de nodo intermedio: Debe eliminar el nodo actual y reconectar los enlaces', () => {
+    lista.avanzar(); // Cursor en el nodo 102
+
+    const nodoEliminado = lista.actual;
+
+    assert.equal(lista.obtenerActual().id, 102);
+    assert.equal(lista.eliminarActual(), true);
+
+    // Verificar que el cursor avance al siguiente nodo
+    assert.equal(lista.obtenerActual().id, 103);
+
+    // Verificar la longitud y los extremos de la lista
+    assert.equal(lista.longitud, 2);
+    assert.equal(lista.cabeza.dato.id, 101);
+    assert.equal(lista.cola.dato.id, 103);
+
+    // Verificar que los nodos restantes estén correctamente enlazados
+    assert.equal(lista.cabeza.siguiente, lista.cola);
+    assert.equal(lista.cola.anterior, lista.cabeza);
+
+    // Verificar que el nodo eliminado esté desvinculado
+    assert.equal(nodoEliminado.siguiente, null);
+    assert.equal(nodoEliminado.anterior, null);
+  });
+
+  test('5. Casos límite: Debe controlar la eliminación en listas vacías y con un solo nodo', () => {
+    // Caso 1: Lista vacía
+    const listaVacia = new ListaDobleNavegacion();
+
+    assert.equal(listaVacia.eliminarActual(), false);
+    assert.equal(listaVacia.cabeza, null);
+    assert.equal(listaVacia.cola, null);
+    assert.equal(listaVacia.actual, null);
+    assert.equal(listaVacia.longitud, 0);
+
+    // Caso 2: Lista con un solo nodo
+    const listaUnNodo = new ListaDobleNavegacion();
+    listaUnNodo.insertar({ id: 201, accion: 'Único registro' });
+
+    const nodoUnico = listaUnNodo.actual;
+
+    assert.equal(listaUnNodo.eliminarActual(), true);
+    assert.equal(listaUnNodo.cabeza, null);
+    assert.equal(listaUnNodo.cola, null);
+    assert.equal(listaUnNodo.actual, null);
+    assert.equal(listaUnNodo.longitud, 0);
+
+    // Verificar la desvinculación del nodo eliminado
+    assert.equal(nodoUnico.siguiente, null);
+    assert.equal(nodoUnico.anterior, null);
+  });
   // --------------------------------------------------------------------------
 });
