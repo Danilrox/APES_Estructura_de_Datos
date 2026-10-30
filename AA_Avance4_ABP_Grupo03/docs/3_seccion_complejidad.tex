@@ -1,0 +1,68 @@
+% =====================================================================
+% SECCIÓN DEL INTEGRANTE 3: Análisis de complejidad de avanzar() y retroceder()
+% Solo usa comandos básicos de LaTeX (section, texttt, tabular, itemize),
+% así que debería compilar con la plantilla del grupo sin agregar paquetes.
+% =====================================================================
+
+\subsection{Análisis de complejidad de \texttt{avanzar()} y \texttt{retroceder()}}
+
+Los métodos \texttt{avanzar()} y \texttt{retroceder()} mueven el cursor
+\texttt{actual} de la \texttt{ListaDobleNavegacion} un nodo hacia adelante o
+hacia atrás. Cada nodo (\texttt{NodoDoble}) guarda dos referencias: una al nodo
+\texttt{siguiente} y otra al nodo \texttt{anterior}. Gracias a esto, el cursor
+puede moverse en ambos sentidos sin recorrer la lista.
+
+\subsubsection*{Complejidad temporal: $O(1)$}
+
+Cada método ejecuta siempre la misma cantidad de pasos, sin importar cuántos
+nodos ($n$) tenga la lista:
+
+\begin{enumerate}
+  \item Una comprobación: que \texttt{actual} no sea \texttt{null} y que exista
+        el nodo vecino (\texttt{actual.siguiente} o \texttt{actual.anterior}).
+  \item Una reasignación de referencia: \texttt{this.actual = this.actual.siguiente}
+        (o \texttt{.anterior}).
+  \item Un retorno: el dato del nuevo nodo, o \texttt{null} si se llegó a un
+        extremo de la lista.
+\end{enumerate}
+
+No hay ciclos (\texttt{for}, \texttt{while}) ni recursión. El número de
+operaciones es constante, por lo que $T(n) = c$ y la complejidad temporal es
+$O(1)$ tanto en el mejor como en el peor caso.
+
+\subsubsection*{Complejidad espacial: $O(1)$}
+
+Ninguno de los dos métodos crea nodos, arreglos ni copias de los datos. Solo
+cambian a qué nodo apunta la referencia \texttt{actual}, que ya existía. La
+memoria adicional que usan es constante, así que la complejidad espacial
+auxiliar es $O(1)$. Como solo se mueve una referencia, el Garbage Collector no
+recibe trabajo extra por navegar.
+
+\subsubsection*{Comparación con una lista simplemente enlazada}
+
+En una lista simple cada nodo solo conoce al \texttt{siguiente}. Avanzar sigue
+siendo $O(1)$, pero para retroceder habría que recorrer la lista desde la
+cabeza hasta el nodo anterior al cursor, lo que en el peor caso cuesta $O(n)$.
+El enlace \texttt{anterior} de la lista doble evita ese recorrido, a cambio de
+una referencia extra por nodo.
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Operación} & \textbf{Lista simple} & \textbf{Lista doble} \\
+\hline
+\texttt{avanzar()}    & $O(1)$ & $O(1)$ \\
+\texttt{retroceder()} & $O(n)$ & $O(1)$ \\
+Memoria por nodo      & 1 referencia & 2 referencias \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Verificación con pruebas unitarias}
+
+Las pruebas 2 y 3 de \texttt{tests/navegacion.test.js} comprueban este
+comportamiento con una lista de tres registros (101, 102 y 103). La prueba 2
+avanza hasta la cola y verifica que en el límite superior se devuelva
+\texttt{null}. La prueba 3 avanza hasta la cola, retrocede hasta la cabeza y
+verifica que en el límite inferior también se devuelva \texttt{null}, sin que
+el cursor se pierda ni se lance un error.
