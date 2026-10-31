@@ -1,0 +1,3 @@
+Guardar aqui las capturas con estos nombres exactos:
+- pr_aprobado.png      (captura del Pull Request aprobado)
+- consola_pruebas.png  (captura de npm test con las 5 pruebas en ok)

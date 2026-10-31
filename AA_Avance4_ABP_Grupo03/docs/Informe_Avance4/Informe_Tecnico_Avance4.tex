@@ -1,0 +1,290 @@
+% !TEX root = Informe_Tecnico_Avance4.tex
+% =====================================================================
+% INFORME TÉCNICO — AVANCE 4 ABP (Grupo 03) — Estructura de Datos, UNL
+% Plantilla basada en el formato "01 Ensayo Álgebra y CD.tex".
+%
+% CÓMO SE USA (Integrante 5):
+%   1. Llenar los datos de la carátula (sección "Datos").
+%   2. Reemplazar cada texto marcado con [COMPLETAR ...] por el contenido real.
+%   3. Las secciones de los integrantes 2, 3 y 4 se pegan donde dice
+%      [PEGAR AQUÍ ...] (o se incluyen con \input{nombre_del_archivo}).
+%   4. Poner las capturas en la carpeta Figuras/ con los nombres indicados.
+%   5. Compilar con biber (por la bibliografía). Máximo 5 páginas.
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+% -- Formato: carga todos los estilos de la UNL (márgenes, letra, encabezado, APA)
+\input{formato}
+
+% -- Paquetes adicionales (los mismos de la plantilla original)
+\usepackage{amsmath,amssymb}   % Símbolos matemáticos, por ejemplo O(1) y O(n)
+\usepackage{enumitem}          % Permite ajustar márgenes de listas
+
+% -- Comandos extra
+% Define el lenguaje JavaScript para mostrar código con colores (listings no lo trae)
+\lstdefinelanguage{JavaScript}{
+    keywords={const, let, var, class, constructor, return, if, else, new, null, this, require, module, exports},
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]',
+    morestring=[b]"
+}
+
+% -- Datos (aparecen en la carátula al hacer \maketitle)
+\title{Informe Técnico: Avance 4 del Proyecto ABP\\[0.3em]
+       \large Navegación Bidireccional con Lista Doblemente Enlazada}
+% Un \author por integrante. [COMPLETAR los nombres completos]
+\author{Jose Maldonado}
+\author{Dario Chillogallo}
+\author{Domenica Narváez}
+\author{Galo Benitez}
+\author{Jahir Campoverde}
+% Afiliación: Universidad, carrera, asignatura y grupo (lo pide la carátula oficial)
+\affil{Universidad Nacional de Loja\\ Carrera de Computación\\
+       Asignatura: Estructura de Datos — Grupo N.° 03}
+\date{\today}   % Fecha automática; también se puede escribir, por ejemplo: 6 de noviembre de 2026
+
+% --- Archivo de bibliografía
+\addbibresource{Referencias.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle               % Imprime título, integrantes, afiliación y fecha
+\thispagestyle{fancy}    % Pone el logo de la UNL en el encabezado de la primera página
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introducción}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Un párrafo corto (4 a 6 líneas).
+
+En el presente avance del proyecto ABP se implementó una lista
+doblemente enlazada para permitir la navegación bidireccional
+entre elementos. Esta estructura permite avanzar, retroceder
+y eliminar nodos mediante referencias al elemento anterior
+y siguiente. Además, se desarrollaron pruebas unitarias
+para verificar su funcionamiento y se utilizó Git y GitHub
+para organizar el trabajo colaborativo, permitiendo que
+cada integrante contribuya al desarrollo del proyecto.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Repositorio y evidencia Git}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 1.
+
+\textbf{Repositorio:} \url{https://github.com/Danilrox/APES_Estructura_de_Datos}\\
+\textbf{Rama de trabajo:} \texttt{feature/avance4-lista-doble-grupo03}\\
+\textbf{Último commit de la rama de trabajo:} \texttt{c7512da}
+
+Los integrantes desarrollaron sus aportes de manera colaborativa
+en la rama de trabajo indicada anteriormente.
+Los cambios se integraron mediante commits y se verificaron
+con las pruebas unitarias del proyecto.
+
+% Captura del Pull Request aprobado. Guardarla como Figuras/pr_aprobado.png
+%\begin{figure}[H]
+ %   \centering
+%    \includegraphics[width=0.7\textwidth]{Figuras/pr_aprobado.png}
+%    \caption{Pull Request aprobado e integrado a la rama \texttt{main}.}
+%    \label{fig:pr}
+%\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Descripción de la estructura de datos}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 2. Explicar nodos, cabeza, cola y cursor (actual).
+
+La \texttt{ListaDobleNavegacion} es una estructura de datos
+dinámica basada en enlaces bidireccionales. Cada elemento
+mantiene referencias hacia adelante y hacia atrás, lo que
+permite navegar eficientemente en ambas direcciones.
+
+\subsection*{Componentes fundamentales}
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \textbf{Nodo (\texttt{NodoDoble}):}
+    almacena el dato y las referencias
+    \texttt{siguiente} y \texttt{anterior}.
+
+    \item \textbf{Cabeza (\texttt{cabeza}):}
+    referencia al primer nodo. Si es \texttt{null},
+    la lista está vacía.
+
+    \item \textbf{Cola (\texttt{cola}):}
+    referencia al último nodo y permite insertar
+    elementos al final en tiempo constante.
+
+    \item \textbf{Cursor (\texttt{actual}):}
+    señala el nodo seleccionado durante la navegación.
+\end{itemize}
+
+\subsection*{Métodos iniciales}
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \texttt{constructor():}
+    inicializa cabeza, cola y actual en \texttt{null},
+    con longitud cero.
+
+    \item \texttt{insertar(dato):}
+    crea un nuevo nodo y lo enlaza al final.
+    Si la lista está vacía, establece cabeza,
+    cola y actual en el nuevo nodo.
+
+    \item \texttt{obtenerActual():}
+    devuelve el dato del nodo actual o
+    \texttt{null} cuando no existe.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Análisis de complejidad}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Esta sección junta el análisis Big-O de los integrantes 3 y 4.
+
+% --- Integrante 3: avanzar() y retroceder()
+% Ya viene lista en el archivo 3_seccion_complejidad.tex (en esta misma carpeta).
+% \input lo inserta aquí tal cual, como si estuviera escrito en este archivo.
+\input{../3_seccion_complejidad}
+
+% --- Integrante 4: eliminarActual() y gestión de memoria
+
+\subsection{Análisis de complejidad de eliminarActual()}
+
+El método \texttt{eliminarActual()} permite eliminar el nodo que se
+encuentra seleccionado mediante el cursor \texttt{actual} de la lista
+doblemente enlazada. Para realizar esta operación, utiliza las
+referencias \texttt{anterior} y \texttt{siguiente} del nodo seleccionado,
+permitiendo reconectar los nodos vecinos sin recorrer toda la estructura.
+
+La operación contempla tres situaciones principales:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Eliminación de un nodo intermedio:} se conecta el nodo
+    anterior con el siguiente.
+
+    \item \textbf{Eliminación de la cabeza o la cola:} se actualiza el
+    extremo correspondiente para conservar la estructura.
+
+    \item \textbf{Eliminación del único nodo:} las referencias
+    \texttt{cabeza}, \texttt{cola} y \texttt{actual} quedan en
+    \texttt{null}.
+\end{itemize}
+
+\textbf{Complejidad temporal:} La operación tiene una complejidad
+de $O(1)$, debido a que accede directamente al nodo actual y modifica
+una cantidad constante de referencias. No necesita recorrer la lista.
+
+\textbf{Complejidad espacial:} La complejidad auxiliar es $O(1)$,
+porque utiliza únicamente una referencia temporal al nodo eliminado,
+sin crear estructuras adicionales.
+
+\subsection{Gestión de memoria y Garbage Collector}
+
+Después de eliminar un nodo, el método establece sus referencias
+\texttt{siguiente} y \texttt{anterior} en \texttt{null}. Esta acción
+desvincula el nodo eliminado de la lista y evita que mantenga conexiones
+innecesarias con los demás elementos.
+
+En JavaScript, el Garbage Collector (recolector de basura) recupera
+automáticamente la memoria de los objetos que ya no son accesibles
+desde el programa. Por lo tanto, al eliminar las referencias internas
+del nodo, se facilita su posterior recolección, siempre que no existan
+otras referencias externas que lo mantengan accesible.
+
+Es importante señalar que establecer las referencias en
+\texttt{null} no libera inmediatamente la memoria; únicamente
+facilita que el recolector de basura identifique los objetos que
+ya no se necesitan.
+
+De esta manera, el método \texttt{eliminarActual()} mantiene la
+integridad de la lista doblemente enlazada y contribuye a una
+gestión adecuada de la memoria.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Matriz de cobertura de pruebas}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Ejecutar "npm test" y llenar la tabla.
+
+En la Tabla \ref{tab:cobertura} se resumen las pruebas unitarias ejecutadas con
+\texttt{node -{}-test} y en la Figura \ref{fig:consola} se muestra la salida de la
+consola.
+
+% Tabla con el formato de la plantilla (booktabs, letra pequeña, con leyenda)
+\begin{table}[H]
+    \centering\small
+    \begin{tabular}{@{}clcc@{}}
+    \toprule
+        \textbf{N.°} & \textbf{Prueba} & \textbf{Métodos evaluados} & \textbf{Estado} \\
+    \midrule
+        1 & Inicialización        & \texttt{insertar}, \texttt{obtenerActual} & [ok] \\
+        2 & Avance secuencial     & \texttt{avanzar}                          & [ok] \\
+        3 & Retroceso secuencial  & \texttt{avanzar}, \texttt{retroceder}     & [ok] \\
+        4 & Eliminación intermedia & \texttt{eliminarActual}, \texttt{retroceder} & [ok] \\
+        5 & Casos límite (lista vacía) & Todos los métodos & [ok] \\
+    \bottomrule
+    \end{tabular}
+    \caption{Matriz de cobertura de las pruebas unitarias.}
+    \label{tab:cobertura}
+\end{table}
+
+\noindent\textbf{Cobertura de código.}
+La ejecución de las pruebas unitarias mediante
+\texttt{node -{}-test}\\
+\texttt{-{}-experimental-test-coverage}
+permitió obtener una cobertura global del
+100\% de líneas, 95,45\% de ramas y 100\% de funciones.
+Las cinco pruebas finalizaron satisfactoriamente,
+sin registrar errores.
+% Captura de la consola con las 5 pruebas en "ok". Guardarla como Figuras/consola_pruebas.png
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Figuras/consola_pruebas.png}
+    \caption{Resultado de \texttt{node -{}-test} tests/navegacion.test.js: 5 de 5 pruebas aprobadas.}
+    \label{fig:consola}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusiones}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Dos o tres puntos cortos.
+
+\begin{itemize}[leftmargin=*]
+\item La lista doblemente enlazada permite navegar en ambas
+direcciones mediante referencias al nodo anterior y siguiente,
+facilitando el desplazamiento entre elementos.
+\item Las cinco pruebas unitarias ejecutadas permitieron
+verificar el correcto funcionamiento de la inicialización,
+el avance, el retroceso, la eliminación de nodos y los
+casos límite de la lista doblemente enlazada.
+\item El uso de Git y GitHub permitió organizar el trabajo
+colaborativo, integrar los aportes de los integrantes y
+mantener un registro de los cambios realizados.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Declaración de ética e inteligencia artificial}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Responsable: Integrante 5. Cada integrante debe pasarle qué IA usó y sus prompts.
+
+Para la organización y revisión del formato del presente
+informe se contó con el apoyo de ChatGPT (OpenAI),
+principalmente en aspectos relacionados con LaTeX.
+Cada integrante es responsable de su aporte y de
+verificar la información presentada.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliografía: se genera sola desde Referencias.bib en formato APA 7
+\nocite{*}            % Incluye todas las referencias del .bib aunque no se citen
+\printbibliography
+
+\end{document}
