@@ -1,1 +1,29 @@
 node_modules/
+
+# Archivos auxiliares de LaTeX
+*.aux
+*.log
+*.toc
+*.out
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Otros auxiliares de LaTeX
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.synctex(busy)
+*.synctex.gz(busy)
+
+# Respaldos del editor (los que viste como -SAVE-ERROR)
+*-SAVE-ERROR
+*.bak
+*~
