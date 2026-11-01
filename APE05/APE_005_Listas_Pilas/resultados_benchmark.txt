@@ -1,0 +1,9 @@
+=== BENCHMARK DE RENDIMIENTO (N = 500000) ===
+
+Tiempo Array Nativo (unshift/shift): 5:12.245 (m:ss.mmm)
+Impacto de Memoria Heap Array: 26.77 MB
+
+Tiempo Pila Transaccional O(1): 141.979ms
+Impacto de Memoria Heap Pila: 42.49 MB
+
+Memoria Heap total al finalizar: 46.32 MB
