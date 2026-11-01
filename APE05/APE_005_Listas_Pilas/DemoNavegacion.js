@@ -1,9 +1,3 @@
-// ============================================================================
-// APE 005 - Demostración de navegación next()/prev() y Undo/Redo con dos pilas
-// Ejecutar con:  node DemoNavegacion.js
-// Estructura de Datos - UNL | Autora: Domenica Narváez
-// ============================================================================
-
 const { ListaDoblementeEnlazada } = require('./ListaDoble');
 const PilaTransaccional = require('./PilaTransaccional');
 

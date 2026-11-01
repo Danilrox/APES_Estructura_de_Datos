@@ -1,10 +1,3 @@
-// ============================================================================
-// APE 005 - Tarea 3: Experimento comparativo (Benchmark CPU & Memory Heap)
-// Ejecutar con:  node --expose-gc BenchmarkNavegacion.js
-// --expose-gc habilita global.gc() para limpiar la memoria antes de cada medición
-// Estructura de Datos - UNL | Autora: Domenica Narváez
-// ============================================================================
-
 const PilaTransaccional = require('./PilaTransaccional');
 
 // Devuelve la memoria Heap usada en ese momento, en megabytes (MB)
