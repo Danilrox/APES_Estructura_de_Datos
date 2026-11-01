@@ -1,0 +1,8 @@
+$ node --expose-gc BenchmarkNavegacion.js
+=== BENCHMARK DE RENDIMIENTO (N = 500000) ===
+
+Tiempo Array Nativo (unshift/shift): 3:11.018 (m:ss.mmm)
+Impacto de Memoria Heap Array: 26.51 MB
+
+Tiempo Pila Transaccional O(1): 129.951ms
+Impacto de Memoria Heap Pila: 43.18 MB
